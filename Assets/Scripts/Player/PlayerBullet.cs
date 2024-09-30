@@ -3,18 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using Interface;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Player
 {
     public class PlayerBullet : MonoBehaviour, IDestroyObject
     {
         [SerializeField] private float speed = 5f;
-        private static readonly Vector3 Dir = Vector3.up;
+        public Vector3 dir = Vector3.up;
 
         private void Update()
         {
             // 2. move (P = P0 + vt)
-            transform.position += Dir * (speed * Time.deltaTime);
+            transform.position += dir * (speed * Time.deltaTime);
         }
 
         public void Destroy()

@@ -1,17 +1,20 @@
+using Extensions;
 using Interface;
 using UnityEngine;
 
+// TODO: Use object pool.
 namespace Enemy
 {
     public class EnemyBullet : MonoBehaviour, IDestroyObject
     {
-        [SerializeField] private float speed = 3f;
+        [SerializeField] private float speed = 1.5f;
         private Vector3 _dir;
 
         private void Start()
         {
             var player = GameObject.FindWithTag("Player");
             _dir = transform.GetDirection(player.transform);
+            transform.LookAt(player.transform);
         }
 
         private void Update()
@@ -22,12 +25,6 @@ namespace Enemy
         public void Destroy()
         {
             Destroy(gameObject);
-            // gameObject.SetActive(false);
-            //
-            // var playerFire = GameObject.Find("Player")?.GetComponent<PlayerFire>();
-            // if (playerFire == null) return;
-            //
-            // playerFire.bulletObjectPool.Add(gameObject);
         }
     }
 }

@@ -1,4 +1,6 @@
-namespace UnityEngine
+using UnityEngine;
+
+namespace Extensions
 {
     public static class GameObjectExtensions
     {

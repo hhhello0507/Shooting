@@ -1,5 +1,6 @@
 using System;
 using Interface;
+using Item;
 using UnityEngine;
 
 namespace Player
@@ -10,17 +11,24 @@ namespace Player
 
         private void OnCollisionEnter(Collision other)
         {
+            var item = other.gameObject.GetComponent<IItem>();
+            if (item != null)
+            {
+                item.Action();
+            }
+            else
+            {
+                Destroy();
+            }
+        }
+
+        public void Destroy()
+        {
             Instantiate(
                 original: explosionFactory,
                 position: transform.position,
                 rotation: Quaternion.identity
             );
-
-            Destroy();
-        }
-
-        public void Destroy()
-        {
             Destroy(gameObject);
         }
     }

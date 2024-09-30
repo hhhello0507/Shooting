@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using Extensions;
 using Interface;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -11,6 +13,13 @@ namespace Enemy
         [SerializeField] private GameObject bulletFactory;
         [SerializeField] private GameObject explosionFactory;
         private EnemyType _type;
+        private GameObject _player;
+
+        private void Start()
+        {
+            _player = GameObject.FindWithTag("Player");
+            // transform.rotation = Quaternion.Euler(new Vector3(90f, 180, 0));
+        }
 
         private void OnEnable()
         {
@@ -22,9 +31,22 @@ namespace Enemy
                 _ => EnemyType.Idle
             };
 
-            if (_type == EnemyType.Idle)
+            switch (_type)
             {
-                StartCoroutine(nameof(FireCoroutine));
+                case EnemyType.Idle:
+                    StartCoroutine(nameof(FireCoroutine));
+                    break;
+                case EnemyType.Normal:
+                    var dir = transform.GetDirection(_player.transform);
+                    var angle = Vector3.SignedAngle(Vector3.down, dir, Vector3.forward);
+                    transform.rotation = Quaternion.Euler(0, 0, angle);
+                    // transform.RotateAround(transform.position, Vector3.forward, dir.y);
+                    break;
+                case EnemyType.Tracking:
+                    break;
+                default:
+                    Debug.Log("Enemy.OnEnable - _type has more types");
+                    break;
             }
         }
 

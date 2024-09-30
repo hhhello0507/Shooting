@@ -5,23 +5,34 @@ namespace Player
 {
     public class PlayerFire : MonoBehaviour
     {
+        private const float FireAngleRange = 10f; // -10 degrees ~ 10 degress
         [SerializeField] private GameObject bulletFactory;
         [SerializeField] private Transform firePosition;
-        public int poolSize = 20;
-        public List<GameObject> bulletObjectPool;
+        private const int PoolSizeEachBullet = 20;
+        private int poolSize = 20;
+
+        private int _bulletCount = 1;
+
+        public int bulletCount
+        {
+            get => _bulletCount;
+            set
+            {
+                if (value <= 7)
+                {
+                    _bulletCount = value;
+                    var totalPoolSize = PoolSizeEachBullet * value;
+                    CreateBullet(totalPoolSize - poolSize);
+                    poolSize = totalPoolSize;
+                }
+            }
+        }
+
+        public List<GameObject> bulletObjectPool = new();
 
         private void Start()
         {
-            bulletObjectPool = new();
-            for (var i = 0; i < poolSize; i++)
-            {
-                var bullet = Instantiate(bulletFactory);
-
-                var bulletScript = bullet.GetComponent<PlayerBullet>();
-
-                bulletObjectPool.Add(bullet);
-                bullet.SetActive(false);
-            }
+            CreateBullet(poolSize);
 
             // Handle joystick activation
             var joystickObject = GameObject.Find("VirtualJoystick");
@@ -42,14 +53,31 @@ namespace Player
             // input
             if (Input.GetButtonDown("Fire1"))
             {
-                if (bulletObjectPool.Count > 0)
+                var angleStep = FireAngleRange / bulletCount;
+                for (var i = 0; i < bulletCount; i++)
                 {
+                    if (bulletObjectPool.Count == 0) return;
+                    
                     var bullet = bulletObjectPool[0];
                     bullet.SetActive(true);
-                    bulletObjectPool.RemoveAt(0);
-
                     bullet.transform.position = firePosition.position;
+                    bulletObjectPool.RemoveAt(0);
+                    
+                    var currentAngle = i * angleStep;
+                    var newDir = Quaternion.Euler(0, 0, currentAngle) * Vector3.up;
+                    var bulletScript = bullet.GetComponent<PlayerBullet>();
+                    bulletScript.dir = newDir;
                 }
+            }
+        }
+
+        private void CreateBullet(int count)
+        {
+            for (var i = 0; i < count; i++)
+            {
+                var bullet = Instantiate(bulletFactory);
+                bullet.SetActive(false);
+                bulletObjectPool.Add(bullet);
             }
         }
     }
