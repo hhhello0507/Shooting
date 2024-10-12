@@ -15,14 +15,9 @@ namespace Enemy
         private EnemyType _type;
         private GameObject _player;
 
-        private void Start()
-        {
-            _player = GameObject.FindWithTag("Player");
-            // transform.rotation = Quaternion.Euler(new Vector3(90f, 180, 0));
-        }
-
         private void OnEnable()
         {
+            _player = GameObject.FindWithTag("Player");
             var rand = Random.Range(0, 10);
             _type = rand switch
             {

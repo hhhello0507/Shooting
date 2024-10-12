@@ -1,9 +1,8 @@
-using System;
 using System.Collections.Generic;
 using Extensions;
 using UnityEngine;
-using UnityEngine.Serialization;
 
+// Scene에 Item 개수가 많아지면 object pool 고려할 것
 namespace Item
 {
     public class ItemManager : MonoBehaviour
@@ -22,7 +21,8 @@ namespace Item
             {
                 new Timer(3, 15, () => CreateItem(powerUpItemFactory)),
                 new Timer(5, 24, () => CreateItem(speedUpItemFactory)),
-                new Timer(36, 36, () => CreateItem(ultimateItemFactory))
+                // new Timer(36, 36, () => CreateItem(ultimateItemFactory))
+                new Timer(0, 36, () => CreateItem(ultimateItemFactory))
             };
         }
 
